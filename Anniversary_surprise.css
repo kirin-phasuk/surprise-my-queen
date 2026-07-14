@@ -1,0 +1,176 @@
+body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+    overflow: hidden; 
+    touch-action: none; 
+}
+
+.floating-heart {
+    position: absolute;
+    bottom: -20px;
+    font-size: 24px;
+    animation: floatUp 5s infinite linear;
+    opacity: 0.5;
+    z-index: 0;
+}
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+.pokeball-container {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.pokeball-container:active { transform: scale(0.9); }
+.pokeball {
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, #ef4444 50%, #ffffff 50%);
+    border: 6px solid #1f2937;
+    position: relative;
+    animation: wiggle 2s infinite;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.pokeball::before {
+    content: ""; position: absolute;
+    top: 50%; left: 0; width: 100%; height: 10px;
+    background: #1f2937; transform: translateY(-50%);
+}
+.pokeball::after {
+    content: ""; position: absolute;
+    top: 50%; left: 50%; width: 45px; height: 45px;
+    background: white; border: 6px solid #1f2937; border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: inset 0 0 0 4px white, inset 0 0 0 10px #1f2937;
+}
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(-15deg); }
+    20% { transform: rotate(15deg); }
+    30% { transform: rotate(-10deg); }
+    40% { transform: rotate(10deg); }
+    50% { transform: rotate(0deg); }
+}
+
+.flash-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; z-index: 9999;
+    opacity: 0; pointer-events: none; transition: opacity 0.5s;
+}
+
+.shake { animation: shake 0.4s; }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+}
+
+.view-section {
+    display: none;
+    position: relative;
+    z-index: 10;
+    width: 100%; height: 100vh;
+    flex-direction: column; justify-content: center; align-items: center;
+}
+.view-section.active { display: flex; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+.tinder-card {
+    position: absolute;
+    width: 300px; height: 450px;
+    background: white; border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s;
+    will-change: transform;
+    touch-action: none;
+}
+.card-img { width: 100%; height: 75%; object-fit: cover; }
+.card-content { padding: 15px; text-align: center; height: 25%; display: flex; flex-direction: column; justify-content: center; }
+
+.match-heart {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 100px; color: #ec4899;
+    opacity: 0; pointer-events: none; z-index: 50;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+}
+.match-heart.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+
+/* ปรับขนาดของซองจดหมายให้ใหญ่ขึ้น */
+.envelope-wrapper {
+    position: relative; width: 90vw; max-width: 450px; height: 60vh; max-height: 350px; /* ใช้ vw และ vh เพื่อให้ขยายตามจอ */
+    cursor: pointer; transition: transform 0.3s;
+}
+.envelope-wrapper:hover { transform: translateY(-5px); }
+.envelope {
+    position: absolute; width: 100%; height: 100%;
+    background: #e2e8f0; border-radius: 10px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden; /* เพิ่มเพื่อให้โค้งมนตามมุมและตัดส่วนที่เกิน */
+}
+
+.envelope::before { 
+    /* Side flaps (ส่วนพับซ้ายและขวา) ใช้เปอร์เซ็นต์ตัดรูปทรงแก้ปัญหาช่องโหว่ 100% */
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #cbd5e1;
+    clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 50% 50%, 0 100%);
+    z-index: 3; 
+}
+
+.envelope::after { 
+    /* Bottom flap (ส่วนพับด้านล่าง) */
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to top, #cbd5e1 0%, #c1cddc 100%); /* เพิ่มมิติแสงเงาให้ซอง */
+    clip-path: polygon(0 100%, 50% 49.5%, 100% 100%); /* ใช้ 49.5% เพื่อซ้อนทับรอยต่อเล็กน้อยกันเส้นขอบขาว */
+    z-index: 4;
+}
+
+.flap {
+    /* Top flap (ฝาปิดด้านบน) */
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #94a3b8;
+    clip-path: polygon(0 0, 100% 0, 50% 50.5%); /* ใช้ 50.5% เพื่อปิดรอยต่อให้สนิท */
+    z-index: 5; transform-origin: top; transition: transform 0.6s 0.2s;
+}
+
+.letter {
+    position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+    background: #fff; border-radius: 8px;
+    padding: 20px; text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    z-index: 2; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; justify-content: center;
+    overflow-y: auto; /* เพิ่ม scroll bar หากเนื้อหาเยอะ */
+}
+
+.envelope-wrapper.open .flap { transform: rotateX(180deg); z-index: 1; }
+/* ปรับความสูงการเลื่อนขึ้นและการขยายของจดหมายให้ใหญ่เต็มตาขึ้น */
+.envelope-wrapper.open .letter { transform: translateY(-15vh); z-index: 6; height: 50vh; max-height: 400px; }
+
+.tinder-card {
+    position: absolute;
+    width: 300px; height: 450px;
+    background: white; border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s;
+    will-change: transform;
+    touch-action: none;
+}
+.card-img { 
+    width: 100%; 
+    height: 75%; 
+    object-fit: contain; /* เปลี่ยนเป็น contain เพื่อไม่ให้ภาพโดนตัด */
+    background-color: #000; /* ใส่พื้นหลังสีดำให้ขอบที่เหลือดูเนียนไปกับภาพ/วิดีโอ */
+}
+.card-content { padding: 15px; text-align: center; height: 25%; display: flex; flex-direction: column; justify-content: center; }
